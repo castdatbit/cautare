@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Series Finder - Securizat</title>
+    <!-- Include PDF.js via CDN for runtime -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+
+    <!-- Google Fonts for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+</head>
+
+<body class="dark-mode">
+
+    <!-- Login Overlay -->
+    <div id="auth-overlay" class="overlay active">
+        <div class="auth-card">
+            <img src="logo.png" alt="App Logo" class="auth-logo">
+            <h2>Bun venit</h2>
+            <p id="auth-message">Introdu parola de acces pentru a continua.</p>
+            <div class="input-group">
+                <input type="password" id="auth-password" placeholder="Parola ta securizată..." autofocus>
+            </div>
+            <button id="auth-btn" class="primary-btn">Deblochează</button>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="app-container" class="container hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="Logo Mic" class="sidebar-logo">
+                <h3>Series Finder</h3>
+            </div>
+
+            <div class="sidebar-actions">
+                <button id="btn-select-folder" class="secondary-btn">
+                    <span class="icon">📁</span> Selectează Folder
+                </button>
+                <div class="status-indicator">
+                    <span id="sync-status" class="dot offline"></span>
+                    <span id="sync-text">Niciun folder selectat</span>
+                </div>
+            </div>
+
+            <div class="stats-box">
+                <h4>Statistici</h4>
+                <p>PDF-uri procesate: <span id="stat-pdfs">0</span></p>
+                <p>Serii indexate: <span id="stat-series">0</span></p>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="btn-lock" class="text-btn">🔒 Blochează Aplicația</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Search Header -->
+            <header class="search-header">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-input" placeholder="Caută o serie (ex: AB12345)..." disabled>
+                    <button id="btn-search" class="primary-btn" disabled>Caută</button>
+                </div>
+            </header>
+
+            <!-- Results View -->
+            <div id="results-area" class="results-area">
+                <div class="empty-state">
+                    <div class="icon-large">📄</div>
+                    <h3>Gata de căutare</h3>
+                    <p>Selectează un folder din meniul lateral pentru a începe indexarea documentelor.</p>
+                </div>
+
+                <!-- PDF Viewer (Hidden initially) -->
+                <div id="pdf-viewer-container" class="hidden">
+                    <div class="viewer-header">
+                        <h4 id="viewer-title">Document.pdf - Pagina X</h4>
+                        <button id="btn-close-viewer" class="text-btn">Închide vizualizarea</button>
+                    </div>
+                    <div id="pdf-render-area">
+                        <canvas id="pdf-canvas"></canvas>
+                        <!-- Un div pentru a plasa text layer-ul (pentru highlight) -->
+                        <div id="text-layer" class="textLayer"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker for PWA installability
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => {
+                    console.log('SW Registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
